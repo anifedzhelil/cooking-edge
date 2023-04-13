@@ -18,13 +18,24 @@ export const RecipesNavBar = () => {
         [RecipeFormKeys.IsDairyFree]: false,
 
     }, onFilterSubmit, onFilterReset);
-    
+
     const onFormReset = () => {
         formRef.current.reset();
         onReset();
     }
     return (
-        <Form className={styles.navbar}  ref={formRef} onSubmit={onSubmit} onReset={onFormReset}  >
+        <Form className={styles.navbar} ref={formRef} onSubmit={onSubmit} onReset={onFormReset}  >
+            <Form.Group as={Row} className="mb-3"  >
+                <Form.Control
+                    type="search"
+                    name="search"
+                    id="search"
+                    value={values.search}
+                    placeholder="Search"
+                    aria-label="Search"
+                    onChange={changeHandler}
+                />
+            </Form.Group>
             <Form.Group as={Row} className="mb-3"  >
                 <Form.Select aria-label="Default select example" onChange={changeHandler} name={RecipeFormKeys.Category}>
                     <option>Избери...</option>

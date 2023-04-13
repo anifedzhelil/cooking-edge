@@ -97,6 +97,10 @@ export const RecipeProvider = ({ children }) => {
             result = result.filter(recipe => recipe.isVegeterian === values.isVegeterian);
         }
 
+        if (values.search?.length > 0){
+         result = result.filter(recipe => recipe.title.includes(values.search)
+        || recipe.products.includes(values.search) || recipe.directions.includes(values.search));
+        }
         setRecipes(result);
     }
 
@@ -107,8 +111,24 @@ export const RecipeProvider = ({ children }) => {
     const onRecipeEditSubmit = () => {
     }
 
-    const onSearchSubmit = (values) => {
+    const onSearchSubmit = async (values) => {
+debugger;
+        if (recipes.length === 0) {
+            await getData()
+                .then((data) => {
+                    debugger;
+                   const result = recipes.filter(recipe => recipe.title.includes(values.search)
+                        || recipe.products.includes(values.search) || recipe.directions.includes(values.search));
+                    setRecipes(result);
+                });
+        }
+        else {
 
+            const result = recipes.filter(recipe => recipe.title.includes(values.search)
+                || recipe.products.includes(values.search) || recipe.directions.includes(values.search));
+
+            setRecipes(result);
+        }
     }
 
     const contextValues = {
