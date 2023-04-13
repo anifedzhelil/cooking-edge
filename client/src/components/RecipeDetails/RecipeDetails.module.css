@@ -1,0 +1,87 @@
+.recipeCard {
+    background-color: #fbf3f3;
+    margin: 10px auto;
+    max-width: 800px;
+    text-align: center;
+}
+
+.checked {
+    color: orange;
+}
+.buttonsDiv {
+    padding: 10px;
+    display: inline-flex;  ;
+    column-gap: 10px;
+    justify-content: space-between;
+}
+.mainDiv {
+    background-color: #fbf3f3;
+    width: 1000px;
+    text-align: center;
+    padding: 20px;
+    box-shadow: rgba(6, 0, 7, 0.2) 5px 10px 24px;
+    margin: 10px auto;
+    max-width: 800px;
+}
+
+.boldText {
+    font-size: x-large;
+    text-decoration: wavy;
+    text-align: left;
+}
+
+.table {
+    text-align: center;
+    width: 100%;
+    max-width: 700px;
+}
+
+.title {
+    padding: 10px;
+    font-size: xx-large;
+}
+
+.commentsList{
+    --bs-list-group-bg: #fbf3f3;
+}
+
+/* CSS */
+.button {
+    width: 150px;
+    align-items: center;
+    appearance: button;
+    background-color: #021a36;
+    border-radius: 8px;
+    border-style: none;
+    box-shadow: rgba(255, 255, 255, 0.26) 0 1px 2px inset;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    flex-shrink: 0;
+    font-family: "RM Neue", sans-serif;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+    padding: 10px 21px;
+    text-align: center;
+    text-transform: none;
+    transition: color .13s ease-in-out, background .13s ease-in-out, opacity .13s ease-in-out, box-shadow .13s ease-in-out;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+.button:active {
+    background-color: #006AE8;
+}
+
+.button:hover {
+    background-color: #1C84FF;
+}
+
+.createComment{
+    padding: 20px;
+}
+

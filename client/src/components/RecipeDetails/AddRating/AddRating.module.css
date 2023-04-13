@@ -1,0 +1,19 @@
+.buttonOn {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: orange;
+    font-size: 25px;
+  }
+
+  .buttonOff {
+    background-color: transparent;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: black;
+    font-size: 25px;
+  }
+  
+  
