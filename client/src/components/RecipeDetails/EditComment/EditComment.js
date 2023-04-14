@@ -2,11 +2,7 @@ import { useState } from "react";
 
 import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "../../../hooks/useForm";
-import { useForm } from "../../../hooks/useForm";
-import { useForm } from "../../../hooks/useForm";
-import { useForm } from "../../../hooks/useForm";
-import { useForm } from "../../../hooks/useForm";
- 
+
 export const EditComment = ({ 
   _id,
   comment,
