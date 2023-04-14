@@ -11,6 +11,14 @@ export const recipeServiceFactory = (token) => {
         return recipes;
     };
 
+    const getAllUserRecipes = async (userId) => {
+        const searchQuery = encodeURIComponent(`_ownerId="${userId}"`);
+        const url = `${baseUrl}?where=${searchQuery}`;
+        const result = await request.get(url);
+        const recipes = Object.values(result);
+        return recipes;
+    };
+
     const getOne = async (recipeId) => {
         const url = `${baseUrl}/${recipeId}`;
         const result = await request.get(url);
@@ -25,5 +33,6 @@ export const recipeServiceFactory = (token) => {
         create,
         getAll,
         getOne,
+        getAllUserRecipes,
     }
 }

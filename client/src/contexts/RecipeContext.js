@@ -13,7 +13,9 @@ export const RecipeProvider = ({ children }) => {
     const recipeService = recipeServiceFactory();
 
     useEffect(() => {
+        debugger;
         getData();
+        navigate('/catalog');
     }, []);
 
     const getData = (async () => {

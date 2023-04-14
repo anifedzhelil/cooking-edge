@@ -32,7 +32,7 @@ export const Header = () => {
               {isAuthenticated && (
                 <>
                   <Nav.Link as={Link} to="/create-recipe">Добави рецепта</Nav.Link>
-                  <Nav.Link as={Link} to="/my-recipes">Моите рецепти</Nav.Link>
+                  <Nav.Link as={Link} to="/my-recipes/:userId/">Моите рецепти</Nav.Link>
 
                   <Nav.Link className={styles.usernameText}>{username}</Nav.Link>
                   <Nav.Link as={Link} to="/logout" >Изход</Nav.Link>
