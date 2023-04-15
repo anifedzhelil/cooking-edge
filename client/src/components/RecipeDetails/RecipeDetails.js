@@ -26,7 +26,7 @@ import { AddComment } from "./AddComment/AddComment";
 import { AddRating } from "./AddRating/AddRating";
 import { Rating } from "../Rating/Rating";
 import { EditComment } from "./EditComment/EditComment";
-import { DeleteConfirmation } from "./DeleteConfirmation/DeleteConfirmation";
+import { DeleteConfirmation } from "../DeleteConfirmation/DeleteConfirmation";
 import { useRecipeContext } from "../../contexts/RecipeContext";
 
 export const RecipeDetails = () => {
