@@ -28,7 +28,6 @@ export const CatalogItem = ({
                     <Card.Text>
                         <Rating totalRating={totalRating.toFixed(2)} ratingCount={ratingCount}></Rating>
                     </Card.Text>
-                    <Card.Text>Порция {portions}</Card.Text>
                 </Card.Body>
                 <Card.Footer>{new Date(createdDate).toLocaleDateString()}</Card.Footer>
             </Card>
