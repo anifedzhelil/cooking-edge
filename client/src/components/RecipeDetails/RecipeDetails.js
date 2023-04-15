@@ -1,6 +1,7 @@
 import { useEffect, useReducer } from "react";
 import { useParams } from "react-router-dom";
 import { useService } from "../../hooks/useService";
+import { useState } from "react";
 
 import { recipeServiceFactory } from "../../services/recipeService";
 import { Link } from "react-router-dom";
@@ -10,7 +11,7 @@ import { Table } from "react-bootstrap";
 import { ListGroup } from "react-bootstrap";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faClockRotateLeft, faUtensils, faList, faFireBurner, faComment } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faClockRotateLeft, faUtensils, faList, faFireBurner, faComment, faFileEdit } from '@fortawesome/free-solid-svg-icons';
 import styles from './RecipeDetails.module.css';
 import emptyImg from './empty_img.jpg';
 
@@ -24,6 +25,7 @@ import { useAuthContex } from "../../contexts/AuthContext";
 import { AddComment } from "./AddComment/AddComment";
 import { AddRating } from "./AddRating/AddRating";
 import { Rating } from "../Rating/Rating";
+import { EditComment } from "./EditComment/EditComment";
 
 export const RecipeDetails = () => {
     const { recipeId } = useParams();
@@ -31,6 +33,13 @@ export const RecipeDetails = () => {
 
     const recipeService = useService(recipeServiceFactory);
     const [recipe, dispatch] = useReducer(recipeReducer, {})
+
+    const [show, setShow] = useState(false);
+
+    const onEditSubmit = (values) =>{
+        debugger;
+        commentServise.edit(values.commentId, values.comment);
+    }
 
     useEffect(() => {
         Promise.all([
@@ -70,14 +79,17 @@ export const RecipeDetails = () => {
         });
     }
 
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
     const isOwner = recipe._ownerId === userId;
-    
+
     return (
         <div className={styles.mainDiv}>
             <Card className={styles.recipeCard}>
                 <Card.Header>
                     <p>
-                        <Rating totalRating={ Math.round(recipe.totalRating ? recipe.totalRating : 0)} ratingCount={recipe.ratings?.length}></Rating>
+                        <Rating totalRating={Math.round(recipe.totalRating ? recipe.totalRating : 0)} ratingCount={recipe.ratings?.length}></Rating>
                     </p>
                 </Card.Header>
                 {<Card.Body>
@@ -137,7 +149,7 @@ export const RecipeDetails = () => {
                         Начин на приготвене
                     </Card.Text>
                     <hr />
-                    آ<Card.Text>{ new String(recipe.directions).replace(/(?:\r\n|\r|\n)/g, '\n')}</Card.Text>
+                    آ<Card.Text>{new String(recipe.directions).replace(/(?:\r\n|\r|\n)/g, '\n')}</Card.Text>
                     {recipe.images && recipe.images.map((img, i) => (
                         i > 0 &&
                         <Card.Img key={img._id} src={img.image} style={{ maxWidth: "600px" }}></Card.Img>)
@@ -167,7 +179,12 @@ export const RecipeDetails = () => {
                         </div>
                         <div>
                             {new Date(x.createdDate).toLocaleDateString()}
+                            {userId === x._ownerId &&
+                                (<Button id="button-size" style={{ color: "blue", backgroundColor: "#fbf3f3", border: "0" }}>
+                                    <FontAwesomeIcon icon={faFileEdit} />
+                                </Button>)}
                         </div>
+                        <EditComment {...x} handleClose={handleClose} show={show} onEditSubmit={onEditSubmit}></EditComment>
                     </ListGroup.Item>))
                 }
             </ListGroup>
