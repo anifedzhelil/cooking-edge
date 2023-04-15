@@ -29,10 +29,13 @@ export const recipeServiceFactory = (token) => {
         return await request.post(baseUrl, recipeData);
     }
 
+    const deleteRecipe = (recipeId) => request.delete(`${baseUrl}/${recipeId}`);
+
     return {
         create,
         getAll,
         getOne,
         getAllUserRecipes,
+        deleteRecipe,
     }
 }

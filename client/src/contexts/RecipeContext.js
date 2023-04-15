@@ -130,6 +130,10 @@ export const RecipeProvider = ({ children }) => {
         }
     }
 
+    const deleteRecipe = (recipeId) =>{
+        setRecipes(state => state.filter(recipe => recipe._id !== recipeId));
+    }
+
     const contextValues = {
         recipes,
         onRecipeCreateSubmit,
@@ -137,6 +141,7 @@ export const RecipeProvider = ({ children }) => {
         onFilterSubmit,
         onFilterReset,
         onSearchSubmit,
+        deleteRecipe,
     }
 
     return (

@@ -27,7 +27,6 @@ export const saveImageToCloudinary = async (image) => {
             console.log(err);
         })
         return response.url;
-
 }
 
 export const create = async (recipeId, image) => {

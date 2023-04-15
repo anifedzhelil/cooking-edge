@@ -1,5 +1,5 @@
 import { useEffect, useReducer } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useService } from "../../hooks/useService";
 import { useState } from "react";
 
@@ -27,18 +27,22 @@ import { AddRating } from "./AddRating/AddRating";
 import { Rating } from "../Rating/Rating";
 import { EditComment } from "./EditComment/EditComment";
 import { DeleteConfirmation } from "./DeleteConfirmation/DeleteConfirmation";
+import { useRecipeContext } from "../../contexts/RecipeContext";
 
 export const RecipeDetails = () => {
+    const navigate = useNavigate();
     const { recipeId } = useParams();
     const { userId, isAuthenticated, username } = useAuthContex();
 
     const recipeService = useService(recipeServiceFactory);
     const [recipe, dispatch] = useReducer(recipeReducer, {})
+    const { deleteRecipe } = useRecipeContext();
 
     const [show, setShow] = useState(false);
     const [commentId, setCommentId] = useState('');
 
-    const [showDelete, setShowDelete] = useState(false);
+    const [showCommentDelete, setShowCommentDelete] = useState(false);
+    const [showRecipeDelete, setShowRecipeDelete] = useState(false);
 
     useEffect(() => {
         Promise.all([
@@ -101,23 +105,35 @@ export const RecipeDetails = () => {
 
     const onDeleteCommentShow = (e) => {
         setCommentId(e.currentTarget.value);
-        setShowDelete(true);
+        setShowCommentDelete(true);
+    }
+
+    const onDeleteRecipeShow = () => {
+        setShowRecipeDelete(true);
     }
 
     const onDeleteModalClose = () => {
-        setShowDelete(false);
+        setShowCommentDelete(false);
+        setShowRecipeDelete(false);
         setCommentId('');
     }
 
-    const onDeleteCommentSubmit = () =>{
+    const onDeleteCommentSubmit = () => {
         commentServise.deleteComment(commentId);
         dispatch({
             type: "DELETE_COMMENT",
             payload: commentId,
         });
-        setShowDelete(false);
+        setShowCommentDelete(false);
         setCommentId('');
-    }   
+    }
+
+    const onRecipeDeleteSubmit = async () => {
+        await recipeService.deleteRecipe(recipeId);
+        deleteRecipe(recipe._id);
+        navigate('/catalog');
+        setShowRecipeDelete(false);
+    };
 
     const isOwner = recipe._ownerId === userId;
 
@@ -197,7 +213,7 @@ export const RecipeDetails = () => {
                                 <Button variant="primary" size="lg">
                                     Редактирай
                                 </Button></Link>
-                            <Button variant="primary">Изтрий</Button>
+                            <Button variant="primary" onClick={onDeleteRecipeShow}>Изтрий</Button>
                         </div>)
                     }
                 </Card.Body>}
@@ -234,12 +250,17 @@ export const RecipeDetails = () => {
                 <>
                     <EditComment show={show} commentId={commentId} onEditSubmit={onEditSubmit} onHandleClose={onHandleClose}></EditComment>
                     <DeleteConfirmation
-                        showDelete={showDelete}
+                        showDelete={showCommentDelete}
                         onDeleteModalClose={onDeleteModalClose}
                         onDeleteSubmit={onDeleteCommentSubmit}
                         message={"Сигурен ли сте, че искате да изтриете коментара?"} />
                 </>
             )}
+            <DeleteConfirmation
+                showDelete={showRecipeDelete}
+                onDeleteModalClose={onDeleteModalClose}
+                onDeleteSubmit={onRecipeDeleteSubmit}
+                message={"Сигурен ли сте, че искате да изтриете рецептата?"} />
             {!recipe.comments?.length && (<p className="no-comment">Няма добавен коментар.</p>)}
             {recipe.isRated && (<p>Благодарим за Вашата оценка! {recipe.isRated}</p>)}
             {!recipe.isRated && isAuthenticated && <AddRating onRatingSubmit={onRatingSubmit} />}
