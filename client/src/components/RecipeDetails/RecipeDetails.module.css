@@ -85,3 +85,8 @@
     padding: 20px;
 }
 
+.buttonModal{
+    color: blue;
+    background-color: #fbf3f3;
+    border: 0; 
+}

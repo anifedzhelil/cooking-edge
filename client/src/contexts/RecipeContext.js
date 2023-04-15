@@ -13,7 +13,6 @@ export const RecipeProvider = ({ children }) => {
     const recipeService = recipeServiceFactory();
 
     useEffect(() => {
-        debugger;
         getData();
         navigate('/catalog');
     }, []);
@@ -114,11 +113,9 @@ export const RecipeProvider = ({ children }) => {
     }
 
     const onSearchSubmit = async (values) => {
-debugger;
         if (recipes.length === 0) {
             await getData()
                 .then((data) => {
-                    debugger;
                    const result = recipes.filter(recipe => recipe.title.includes(values.search)
                         || recipe.products.includes(values.search) || recipe.directions.includes(values.search));
                     setRecipes(result);

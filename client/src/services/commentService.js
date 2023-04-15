@@ -13,9 +13,21 @@ export const getAll = async(recipeId) =>{
     return comments;
 };
 
+export const getOne = async (commentId) => {
+    const url = `${baseUrl}/${commentId}`;
+    const result = await request.get(url);
+    return result;
+}
+
 export const create = async(recipeId, comment, createdDate) =>{
     const result = await request.post(baseUrl,{recipeId, comment,createdDate});
     return result;
 };
 
-export const edit = (commentId, comment) =>  request.put(`${baseUrl}/${commentId}`, comment);
+export const edit = async(recipeId, commentId, comment, createdDate) =>  {
+   const result = await request.put(`${baseUrl}/${commentId}`, {recipeId, comment, createdDate});
+   return result;
+}
+
+export const deleteComment = (commentId) => request.delete(`${baseUrl}/${commentId}`);
+

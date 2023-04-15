@@ -11,7 +11,7 @@ import { Table } from "react-bootstrap";
 import { ListGroup } from "react-bootstrap";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faClock, faClockRotateLeft, faUtensils, faList, faFireBurner, faComment, faFileEdit } from '@fortawesome/free-solid-svg-icons';
+import { faClock, faClockRotateLeft, faUtensils, faList, faFireBurner, faComment, faFileEdit, faRemove } from '@fortawesome/free-solid-svg-icons';
 import styles from './RecipeDetails.module.css';
 import emptyImg from './empty_img.jpg';
 
@@ -26,6 +26,7 @@ import { AddComment } from "./AddComment/AddComment";
 import { AddRating } from "./AddRating/AddRating";
 import { Rating } from "../Rating/Rating";
 import { EditComment } from "./EditComment/EditComment";
+import { DeleteConfirmation } from "./DeleteConfirmation/DeleteConfirmation";
 
 export const RecipeDetails = () => {
     const { recipeId } = useParams();
@@ -35,11 +36,9 @@ export const RecipeDetails = () => {
     const [recipe, dispatch] = useReducer(recipeReducer, {})
 
     const [show, setShow] = useState(false);
+    const [commentId, setCommentId] = useState('');
 
-    const onEditSubmit = (values) =>{
-        debugger;
-        commentServise.edit(values.commentId, values.comment);
-    }
+    const [showDelete, setShowDelete] = useState(false);
 
     useEffect(() => {
         Promise.all([
@@ -79,8 +78,46 @@ export const RecipeDetails = () => {
         });
     }
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+    const onEditSubmit = async (values) => {
+
+        const response = await commentServise.edit(recipeId, values._id, values.comment, new Date());
+        dispatch({
+            type: "EDIT_COMMENT",
+            payload: response,
+        });
+        setShow(false);
+        setCommentId('');
+    }
+
+    const onHandleClose = () => {
+        setShow(false);
+        setCommentId('');
+    }
+
+    const onHandleShow = (e) => {
+        setCommentId(e.currentTarget.value);
+        setShow(true);
+    }
+
+    const onDeleteCommentShow = (e) => {
+        setCommentId(e.currentTarget.value);
+        setShowDelete(true);
+    }
+
+    const onDeleteModalClose = () => {
+        setShowDelete(false);
+        setCommentId('');
+    }
+
+    const onDeleteCommentSubmit = () =>{
+        commentServise.deleteComment(commentId);
+        dispatch({
+            type: "DELETE_COMMENT",
+            payload: commentId,
+        });
+        setShowDelete(false);
+        setCommentId('');
+    }   
 
     const isOwner = recipe._ownerId === userId;
 
@@ -179,15 +216,30 @@ export const RecipeDetails = () => {
                         </div>
                         <div>
                             {new Date(x.createdDate).toLocaleDateString()}
-                            {userId === x._ownerId &&
-                                (<Button id="button-size" style={{ color: "blue", backgroundColor: "#fbf3f3", border: "0" }}>
-                                    <FontAwesomeIcon icon={faFileEdit} />
-                                </Button>)}
+                            {userId === x._ownerId && (
+                                <>
+                                    <Button id="button-size" onClick={onHandleShow} value={x._id} className={styles.buttonModal}>
+                                        <FontAwesomeIcon icon={faFileEdit} />
+                                    </Button>
+                                    <Button id="button-size" onClick={onDeleteCommentShow} value={x._id} className={styles.buttonModal}>
+                                        <FontAwesomeIcon icon={faRemove} />
+                                    </Button>
+                                </>
+                            )}
                         </div>
-                        <EditComment {...x} handleClose={handleClose} show={show} onEditSubmit={onEditSubmit}></EditComment>
                     </ListGroup.Item>))
                 }
             </ListGroup>
+            {commentId && (
+                <>
+                    <EditComment show={show} commentId={commentId} onEditSubmit={onEditSubmit} onHandleClose={onHandleClose}></EditComment>
+                    <DeleteConfirmation
+                        showDelete={showDelete}
+                        onDeleteModalClose={onDeleteModalClose}
+                        onDeleteSubmit={onDeleteCommentSubmit}
+                        message={"Сигурен ли сте, че искате да изтриете коментара?"} />
+                </>
+            )}
             {!recipe.comments?.length && (<p className="no-comment">Няма добавен коментар.</p>)}
             {recipe.isRated && (<p>Благодарим за Вашата оценка! {recipe.isRated}</p>)}
             {!recipe.isRated && isAuthenticated && <AddRating onRatingSubmit={onRatingSubmit} />}

@@ -19,6 +19,7 @@ export const AddComment = ({ onCommentSubmit }) => {
         if (form.checkValidity() === false) {
             event.stopPropagation();
         }
+        
         else {
             onSubmit(event);
              values.comment = '';

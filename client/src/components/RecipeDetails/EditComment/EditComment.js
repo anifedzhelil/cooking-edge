@@ -1,32 +1,56 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
+import * as  commentServise from "../../../services/commentService";
 
 import { Modal, Button, Form } from "react-bootstrap";
 import { useForm } from "../../../hooks/useForm";
 
-export const EditComment = ({ 
-  _id,
-  comment,
-  handleClose,
+export const EditComment = ({
+  commentId,
   show,
+  onHandleClose,
   onEditSubmit }) => {
 
   const [validated, setValidated] = useState(false);
-  const { values, changeHandler, onSubmit } = useForm({
-    commentId: _id,
-    comment: comment,
-}, onEditSubmit);
+
+  const { values, changeHandler, onSubmit, changeValues } = useForm({
+    _id: commentId,
+    comment: '',
+    createdDate: new Date(),
+  }, onEditSubmit);
+
+  useEffect(() => {
+    commentServise.getOne(commentId)
+      .then(result => {
+        changeValues(result);
+      });
+  }, [commentId]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const form = event.currentTarget;
+
+    if (form.checkValidity() === false) {
+      event.stopPropagation();
+    }
+
+    else {
+      onSubmit(event);
+    }
+    setValidated(true);
+  };
 
   return (
-    <Modal show={show} onHide={handleClose}>
+    <Modal show={show} onHide={onHandleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Modal heading</Modal.Title>
+        <Modal.Title>Редактиране</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <Form onSubmit={onSubmit} noValidate validated={validated}>
+        <Form onSubmit={handleSubmit}  noValidate validated={validated}>
           <Form.Control
             required
             placeholder="Коментар..."
-            id="directions"
+            id="ْcomment"
             as="textarea"
             rows={6}
             value={values.comment}
@@ -38,6 +62,9 @@ export const EditComment = ({
           <div style={{ padding: "10px" }}>
             <Button variant="primary" type="submit" style={{ marginRight: "10px", }}>
               Запази
+            </Button>
+            <Button variant="secondary" onClick={onHandleClose}>
+              Затвори
             </Button>
           </div>
         </Form>
