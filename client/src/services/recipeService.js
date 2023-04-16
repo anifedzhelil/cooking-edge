@@ -31,8 +31,11 @@ export const recipeServiceFactory = (token) => {
 
     const deleteRecipe = (recipeId) => request.delete(`${baseUrl}/${recipeId}`);
 
+    const edit = (recipeId, data) => request.put(`${baseUrl}/${recipeId}`, data);
+
     return {
         create,
+        edit,
         getAll,
         getOne,
         getAllUserRecipes,

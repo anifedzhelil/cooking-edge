@@ -33,3 +33,5 @@ export const create = async (recipeId, image) => {
     const result = await request.post(baseUrl, { recipeId, image });
     return result;
 };
+
+export const deleteImage = (imageId) => request.delete(`${baseUrl}/${imageId}`);

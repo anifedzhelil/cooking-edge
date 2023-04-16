@@ -16,7 +16,6 @@ export const UserRecipes = () => {
     const [recipes, setRecipes] = useState([]);
 
     useEffect(() => {
-        debugger;
         recipeService.getAllUserRecipes(userId)
             .then(async (data) => {
                 const allRecipes = [];

@@ -14,7 +14,7 @@ export const RecipeProvider = ({ children }) => {
 
     useEffect(() => {
         getData();
-        navigate('/catalog');
+        // navigate('/catalog');
     }, []);
 
     const getData = (async () => {
@@ -98,9 +98,9 @@ export const RecipeProvider = ({ children }) => {
             result = result.filter(recipe => recipe.isVegeterian === values.isVegeterian);
         }
 
-        if (values.search?.length > 0){
-         result = result.filter(recipe => recipe.title.includes(values.search)
-        || recipe.products.includes(values.search) || recipe.directions.includes(values.search));
+        if (values.search?.length > 0) {
+            result = result.filter(recipe => recipe.title.includes(values.search)
+                || recipe.products.includes(values.search) || recipe.directions.includes(values.search));
         }
         setRecipes(result);
     }
@@ -109,14 +109,41 @@ export const RecipeProvider = ({ children }) => {
         getData();
     }
 
-    const onRecipeEditSubmit = () => {
+    const onRecipeEditSubmit = async (values) => {
+
+        const imgUrls = [];
+        await recipeService.edit(values._id, values)
+            .then(async (data) => {
+                const images = Array.from(values.images);
+                await Promise.all(images?.map(async (file) => {
+                    await imageService.saveImageToCloudinary(file)
+                        .then(async (imageUrl) => {
+                            imgUrls.push(imageUrl);
+                            if (data._id) {
+                                await imageService.create(data._id, imageUrl);
+                            }
+                        })
+                })
+                )
+                    .then(async() => {
+                        const images = await imageService.getAll(data._id);
+                            setRecipes(state => state.map(x => x._id === values._id ? {
+                            ...data,
+                            imageUrl: images[0].image,
+                            totalRating: x.totalRating,
+                        } : x))
+
+                    })
+
+            });
+        navigate(`/recipe-details/${values._id}`);
     }
 
     const onSearchSubmit = async (values) => {
         if (recipes.length === 0) {
             await getData()
                 .then((data) => {
-                   const result = recipes.filter(recipe => recipe.title.includes(values.search)
+                    const result = recipes.filter(recipe => recipe.title.includes(values.search)
                         || recipe.products.includes(values.search) || recipe.directions.includes(values.search));
                     setRecipes(result);
                 });
@@ -130,7 +157,7 @@ export const RecipeProvider = ({ children }) => {
         }
     }
 
-    const deleteRecipe = (recipeId) =>{
+    const deleteRecipe = (recipeId) => {
         setRecipes(state => state.filter(recipe => recipe._id !== recipeId));
     }
 

@@ -1,8 +1,26 @@
 
 .createForm {
+    background-color: #fbf3f3;
     padding: 20px;
     border-width: 3px;
     box-shadow: rgba(6, 6, 7, 0.2) 5px 10px 24px;
     width: 50%;
      margin: 10px auto;
-  }
+}
+
+.buttonDelete{
+    top: 0px;
+    left: 200px;
+    position: absolute;
+}
+
+.divImages {
+    position: relative;
+    display: inline-block;
+    font-size: 0;
+    padding: 20px;
+}
+
+.divButtons{
+    display: block;
+}

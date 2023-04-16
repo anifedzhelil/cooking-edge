@@ -1,23 +1,32 @@
-import styles from './EditRecipe.module.css'
-import { Form, Row, Col, Button } from 'react-bootstrap'
-import { useState } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import { useForm } from '../../hooks/useForm';
-import { RecipeCategories, Diffuculty, RecipeFormKeys } from '../../constants/GlobalConstants';
-import { useService } from "../../hooks/useService";
-import { recipeServiceFactory } from "../../services/recipeService";
+import styles from './EditRecipe.module.css';
+
+import { useState, useEffect } from 'react';
+import { Form, Row, Col, Button } from 'react-bootstrap';
+
 import { useParams } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useForm } from '../../hooks/useForm';
+import { useService } from "../../hooks/useService";
 import { useRecipeContext } from "../../contexts/RecipeContext";
+import { RecipeCategories, Diffuculty, RecipeFormKeys } from '../../constants/GlobalConstants';
+
+import { recipeServiceFactory } from "../../services/recipeService";
+import * as  imageService from "../../services/imageService";
+
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faRemove } from '@fortawesome/free-solid-svg-icons';
+import { DeleteConfirmation } from '../DeleteConfirmation/DeleteConfirmation';
 
 export const EditRecipe = () => {
     const { onRecipeEditSubmit } = useRecipeContext();
-
-    const [validated, setValidated] = useState(false);
-    const { recipeId } = useParams();
     const recipeService = useService(recipeServiceFactory);
 
-    const { values, changeHandler, onSubmit, checkChangeHandler, fileChangeHandler, changeValues} = useForm({
+    const [validated, setValidated] = useState(false);
+    const [images, setImages] = useState({});
+    const { recipeId } = useParams();
+    const [show, setShow] = useState(false);
+    const [imageId, setImageId] = useState(false);
+
+    const { values, changeHandler, onSubmit, checkChangeHandler, fileChangeHandler, changeValues } = useForm({
         [RecipeFormKeys.Title]: '',
         [RecipeFormKeys.Category]: '',
         [RecipeFormKeys.PreparingTime]: '',
@@ -33,24 +42,46 @@ export const EditRecipe = () => {
         [RecipeFormKeys.Images]: {},
     }, onRecipeEditSubmit);
 
+
     useEffect(() => {
-        recipeService.getOne(recipeId)
-            .then(result => {
-                changeValues(result);
+        Promise.all([
+            recipeService.getOne(recipeId),
+            imageService.getAll(recipeId),
+        ])
+            .then(([recipeData, images]) => {
+                changeValues(recipeData);
+                setImages(images);
             });
     }, [recipeId]);
 
     const handleSubmit = (event) => {
+        
         const form = event.currentTarget;
         if (form.checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
         }
-
+        else {
+            onSubmit(event);
+        }
         setValidated(true);
-        onSubmit(event);
     };
 
+    const onModalShow = (e) => {
+        setImageId(e.currentTarget.value);
+        setShow(true);
+    }
+
+    const onDeleteModalClose = (e) => {
+        setShow(false);
+        setImageId('');
+    }
+
+    const onDeleteSubmit = () => {
+        imageService.deleteImage(imageId);
+        setImages(state => state.filter(image => image._id !== imageId));
+        setShow(false);
+    }
 
     return (
         <Form className={styles.createForm} onSubmit={handleSubmit} noValidate validated={validated} >
@@ -60,7 +91,8 @@ export const EditRecipe = () => {
                     id="title"
                     required
                     name={RecipeFormKeys.Title}
-                    values={values[RecipeFormKeys.Title]}
+                    type="input"
+                    value={values[RecipeFormKeys.Title]}
                     onChange={changeHandler} />
                 <Form.Control.Feedback type="invalid">
                     Моля въведете заглавие.
@@ -68,7 +100,7 @@ export const EditRecipe = () => {
             </Form.Group>
             <Form.Group className="mb-3" as={Col} >
                 <Form.Label>Категория</Form.Label>
-                <Form.Select required aria-label="Избери.." onChange={changeHandler} name={RecipeFormKeys.Category}>
+                <Form.Select required aria-label="Избери.." onChange={changeHandler} value={values[RecipeFormKeys.Category]} name={RecipeFormKeys.Category}>
                     <option value="" disabled selected="selected">Избери...</option>
                     <option value={RecipeCategories.Salad}>Салата</option>
                     <option value={RecipeCategories.Soup}>Супа</option>
@@ -86,25 +118,28 @@ export const EditRecipe = () => {
                     <Form.Label>Време за подготовка (мин)</Form.Label>
                     <Form.Control type="number"
                         required
+                        min="1"
                         id="preparingTime"
                         name={RecipeFormKeys.PreparingTime}
                         value={values[RecipeFormKeys.PreparingTime]}
                         onChange={changeHandler} />
                     <Form.Control.Feedback type="invalid">
-                        Моля въведете време за подготовка.
+                        Моля въведете валидна стойност за време за подготовка.
                     </Form.Control.Feedback>
                 </Form.Group >
                 <Form.Group className="mb-3" as={Col} >
-                    <Form.Label>Време за готвене (мин)</Form.Label>
+                    <Form.Label>
+                        Време за готвене (мин)</Form.Label>
                     <Form.Control
                         required
                         type="number"
+                        min="1"
                         id="cookingTime"
                         value={values[RecipeFormKeys.CookingTime]}
                         name={RecipeFormKeys.CookingTime}
                         onChange={changeHandler} />
                     <Form.Control.Feedback type="invalid">
-                        Моля въведете време за готвене.
+                        Моля въведете валидна стойност за време за готвене.
                     </Form.Control.Feedback>
                 </Form.Group>
             </Row>
@@ -114,17 +149,21 @@ export const EditRecipe = () => {
                     <Form.Control
                         required
                         type="number"
+                        min="1"
                         id="portions"
                         value={values[RecipeFormKeys.Portions]}
                         name={RecipeFormKeys.Portions}
                         onChange={changeHandler} />
                     <Form.Control.Feedback type="invalid">
-                        Моля въведете брой порции.
+                        Моля въведете стойност за брой порции.
                     </Form.Control.Feedback>
                 </Form.Group >
                 <Form.Group className="mb-3" as={Col} >
                     <Form.Label>Трудност</Form.Label>
-                    <Form.Select aria-label="Избери.." onChange={changeHandler} name={RecipeFormKeys.Difficulty} required>
+                    <Form.Select aria-label="Избери.."
+                        onChange={changeHandler}
+                        value={values[RecipeFormKeys.Difficulty]}
+                        name={RecipeFormKeys.Difficulty} required>
                         <option value="" disabled selected="selected">Избери...</option>
                         <option value={Diffuculty.Easy}>Лесна</option>
                         <option value={Diffuculty.Medium}>Средна</option>
@@ -167,6 +206,7 @@ export const EditRecipe = () => {
                     <Form.Check
                         inline
                         value={values[RecipeFormKeys.IsVegan]}
+                        checked={values[RecipeFormKeys.IsVegan]}
                         name={RecipeFormKeys.IsVegan}
                         onClick={checkChangeHandler}
                         type='checkbox'
@@ -178,6 +218,7 @@ export const EditRecipe = () => {
                     <Form.Check
                         inline
                         value={values[RecipeFormKeys.IsVegeterian]}
+                        checked={values[RecipeFormKeys.IsVegeterian]}
                         name={RecipeFormKeys.IsVegeterian}
                         onClick={checkChangeHandler}
                         type='checkbox'
@@ -190,6 +231,7 @@ export const EditRecipe = () => {
 
                         label="Безглутенова"
                         value={values[RecipeFormKeys.IsGlutenFree]}
+                        checked={values[RecipeFormKeys.IsGlutenFree]}
                         name={RecipeFormKeys.IsGlutenFree}
                         onClick={checkChangeHandler}
                         id="isGlutenFree" />
@@ -197,7 +239,8 @@ export const EditRecipe = () => {
                 <Form.Group className="mb-3" as={Col} >
                     <Form.Check
                         label="Безмлечна"
-                        value={values[RecipeFormKeys.isDairyFree]}
+                        value={values[RecipeFormKeys.IsDairyFree]}
+                        checked={values[RecipeFormKeys.IsDairyFree]}
                         name={RecipeFormKeys.IsDairyFree}
                         onClick={checkChangeHandler}
                         type="checkbox"
@@ -209,35 +252,31 @@ export const EditRecipe = () => {
                 <Form.Control type="file"
                     multiple
                     accept="image/png, image/jpeg"
-                    required
                     onChange={fileChangeHandler}
                     name={RecipeFormKeys.Images}
                     files={values[RecipeFormKeys.Images]}
                 />
-                <Form.Control.Feedback type="invalid">
-                    Моля изберете поне една снимка.
-                </Form.Control.Feedback>
             </Form.Group>
-            <Button variant="primary" type="submit" style={{ marginRight: "10px" }}>
-                Запази
-            </Button>
-            <Button variant="primary" type="reset">
-                Затвори
-            </Button>
+            {Array.from(images).map((image) => {
+                return (<div className={styles.divImages} key={image._id}>
+                    <Button id="button-size" size='sm' value={image._id} onClick={onModalShow} className={styles.buttonDelete}>
+                        <FontAwesomeIcon icon={faRemove} />
+                    </Button>
+                    <img style={{ width: "200px" }}
+                        src={image.image} />
+                </div>)
+            })}
+            <DeleteConfirmation
+                showDelete={show}
+                onDeleteModalClose={onDeleteModalClose}
+                onDeleteSubmit={onDeleteSubmit}
+                message={"Сигурен ли сте, че искате да изтриете снимката?"} />
+            <div className={styles.divButtons}>
+                <Button variant="primary" type="submit" style={{ marginRight: "10px" }}>
+                    Запази
+                </Button>
+            </div>
 
         </Form>
-
-
-
-
-
-
-
-
-
-
-
-
-
     );
 }
