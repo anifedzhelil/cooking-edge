@@ -1,0 +1,12 @@
+.footer {
+    position: fixed;
+    background-color: #fbf3f3;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+}
+
+.footer::before{
+    height: 100px;
+}

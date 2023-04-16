@@ -15,6 +15,7 @@ import { RouteGuard } from './components/Common/RouteGard';
 
 import { AuthProvider } from './contexts/AuthContext';
 import { RecipeProvider } from './contexts/RecipeContext';
+import { Footer } from './components/Footer/Footer';
 
 function App() {
     return (
@@ -22,22 +23,25 @@ function App() {
             <RecipeProvider>
                 <div>
                     <Header />
-                    <Routes>
-                        <Route path="/" element={<Catalog />}></Route>
-                        <Route element={<RouteGuard />}>
-                        </Route>
-                        <Route path="/catalog-Item" element={<CatalogItem />}></Route>
-                        <Route path="/register" element={<Register />}></Route>
-                        <Route path="/login" element={<Login />}></Route>
-                        <Route path="/catalog" element={<Catalog />}></Route>
-                        <Route path="/logout" element={<Logout />}></Route>
-                        <Route path="/recipe-details/:recipeId/*" element={<RecipeDetails />}></Route>
-                        <Route element={<RouteGuard />}>
-                            <Route path="/create-recipe" element={<CreateRecipe />} ></Route>
-                            <Route path="/recipeDetails/:recipeId/edit" element={<EditRecipe />}></Route>
-                        </Route>
+                    <div className="App-div">
+                        <Routes>
+                            <Route path="/" element={<Catalog />}></Route>
+                            <Route element={<RouteGuard />}>
+                            </Route>
+                            <Route path="/catalog-Item" element={<CatalogItem />}></Route>
+                            <Route path="/register" element={<Register />}></Route>
+                            <Route path="/login" element={<Login />}></Route>
+                            <Route path="/catalog" element={<Catalog />}></Route>
+                            <Route path="/logout" element={<Logout />}></Route>
+                            <Route path="/recipe-details/:recipeId/*" element={<RecipeDetails />}></Route>
+                            <Route element={<RouteGuard />}>
+                                <Route path="/create-recipe" element={<CreateRecipe />} ></Route>
+                                <Route path="/recipeDetails/:recipeId/edit" element={<EditRecipe />}></Route>
+                            </Route>
 
-                    </Routes>
+                        </Routes>
+                    </div>
+                    <Footer />
                 </div>
             </RecipeProvider>
         </AuthProvider >
