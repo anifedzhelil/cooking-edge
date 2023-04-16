@@ -3,7 +3,6 @@ import { Route, Routes } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import { Header } from './components/Header/Header';
-import { Home } from './components/Home/Home';
 import { Login } from './components/Login/Login';
 import { Register } from './components/Register/Register';
 import { Logout } from './components/Logout/Logout';
@@ -16,7 +15,6 @@ import { RouteGuard } from './components/Common/RouteGard';
 
 import { AuthProvider } from './contexts/AuthContext';
 import { RecipeProvider } from './contexts/RecipeContext';
-import { UserRecipes } from './components/UserRecipes/UserRecipes';
 
 function App() {
     return (
@@ -25,7 +23,7 @@ function App() {
                 <div>
                     <Header />
                     <Routes>
-                        <Route path="/" element={<Home />}></Route>
+                        <Route path="/" element={<Catalog />}></Route>
                         <Route element={<RouteGuard />}>
                         </Route>
                         <Route path="/catalog-Item" element={<CatalogItem />}></Route>
@@ -33,7 +31,6 @@ function App() {
                         <Route path="/login" element={<Login />}></Route>
                         <Route path="/catalog" element={<Catalog />}></Route>
                         <Route path="/logout" element={<Logout />}></Route>
-                        <Route path="/my-recipes/:userId/*" element={<UserRecipes />}></Route>
                         <Route path="/recipe-details/:recipeId/*" element={<RecipeDetails />}></Route>
                         <Route element={<RouteGuard />}>
                             <Route path="/create-recipe" element={<CreateRecipe />} ></Route>
