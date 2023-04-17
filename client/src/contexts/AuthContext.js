@@ -1,8 +1,9 @@
-import { createContext, useContext} from "react";
+import { createContext, useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { useLogalStorage } from "../hooks/useLocalStorage";
-import  {authServiceFactory } from  '../services/authService';
+import { authServiceFactory } from '../services/authService';
+
 
 export const AuthContext = createContext();
 
@@ -10,37 +11,46 @@ export const AuthProvider = ({
     children,
 }) => {
     const [auth, setAuth] = useLogalStorage('auth', {});
+    const [errorMessage, setErrorMessage] = useState('');
+
     const authService = authServiceFactory(auth.accessToken);
-    
+
     const navigate = useNavigate();
-    
+
     const onLoginSubmit = async (data) => {
-        const result = await authService.login(data);
         try {
+            const result = await authService.login(data);
             setAuth(result);
+            setErrorMessage("");
             navigate('/catalog');
         } catch (error) {
-            console.log('There is a problem');
+            setErrorMessage("Грешен имайл адрес или парола.");
         }
     }
-                  
+
     const onLogout = async () => {
+        setErrorMessage("");
         await authService.logout();
         setAuth({});
-        localStorage.clear(); 
+        localStorage.clear();
     };
 
     const onRegisterSubmit = async (values) => {
         const { confirmPassword, ...registerData } = values;
         if (confirmPassword !== registerData.password) {
+            setErrorMessage("Паролата не съвпада");
             return;
         }
         try {
             const result = await authService.register(registerData);
             setAuth(result);
+            setErrorMessage("");
             navigate('/catalog');
         } catch (error) {
             console.log('There is a problem');
+            setErrorMessage("Съществува акаунт с посочения имейл");
+
+            return;
         }
     }
 
@@ -53,8 +63,9 @@ export const AuthProvider = ({
         userEmail: auth.email,
         username: auth.username,
         isAuthenticated: !!auth.accessToken,
+        errorMessage,
     };
-    
+
     return <>
         <AuthContext.Provider value={contextValues}>
             {children}
@@ -62,7 +73,7 @@ export const AuthProvider = ({
     </>
 }
 
-export const useAuthContex= () =>{
-    const context  = useContext(AuthContext);
+export const useAuthContex = () => {
+    const context = useContext(AuthContext);
     return context;
 }

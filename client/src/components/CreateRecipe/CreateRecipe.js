@@ -40,7 +40,6 @@ export const CreateRecipe = () => {
 
         setValidated(true);
     };
-
                            
     return (
         <Form className={styles.createForm} onSubmit={handleSubmit} noValidate validated={validated} >

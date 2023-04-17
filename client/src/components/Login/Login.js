@@ -1,10 +1,11 @@
-import {Button, Form} from 'react-bootstrap';
+import { Button, Form } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
 import { useAuthContex } from "../../contexts/AuthContext";
-import {useForm} from '../../hooks/useForm';
-import styles from './Login.module.css';
+import { useForm } from '../../hooks/useForm';
+import { useState } from 'react';
 
+import styles from './Login.module.css';
 
 const LoginFormKeys = {
     Email: 'email',
@@ -12,47 +13,68 @@ const LoginFormKeys = {
 };
 
 export const Login = () => {
-    const { onLoginSubmit } = useAuthContex();
+    const { onLoginSubmit, errorMessage } = useAuthContex();
+    const [validated, setValidated] = useState(false);
+
     const { values, changeHandler, onSubmit } = useForm({
         [LoginFormKeys.Email]: '',
         [LoginFormKeys.Password]: '',
     }, onLoginSubmit);
 
+    const handleSubmit = (event) => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        if (form.checkValidity() === false) {
+            event.stopPropagation();
+        }
+        else {
+            onSubmit(event);
+        }
+        setValidated(true);
+    };
+
     return (
         <>
-            <Form className={styles.loginForm} method="post" onSubmit={onSubmit}>
+            <Form className={styles.loginForm} method="post" onSubmit={handleSubmit} noValidate validated={validated}>
                 <Form.Group className="mb-3">
                     <Form.Label>Email адрес</Form.Label>
-                    <Form.Control 
-                        type="email" 
-                        id="email" 
+                    <Form.Control
+                        type="email"
+                        required
+                        id="email"
                         name={LoginFormKeys.Email}
-                        placeholder="Въведи email" 
+                        placeholder="Въведи email"
                         value={values[LoginFormKeys.Email]}
-                        onChange={changeHandler}/>
+                        onChange={changeHandler} />
+                    <Form.Control.Feedback type="invalid">
+                        Моля въведете имeйл.
+                    </Form.Control.Feedback>
                 </Form.Group>
 
                 <Form.Group className="mb-3">
                     <Form.Label>Парола</Form.Label>
-                    <Form.Control 
-                        type="password" 
+                    <Form.Control
+                        type="password"
                         id="password"
-                        placeholder="Парола" 
+                        required
+                        placeholder="Парола"
                         name={LoginFormKeys.Password}
                         value={values[LoginFormKeys.Password]}
-                        onChange={changeHandler}/>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                    <Form.Check type="checkbox" label="Check me out" />
+                        onChange={changeHandler} />
+                    <Form.Control.Feedback type="invalid">
+                        Моля въведете парола.
+                    </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className={styles.loginButton}>
                     <Button variant="primary" type="submit" style={{ width: "80%" }} >
-                        Submit
+                        Вход
                     </Button>
                 </Form.Group>
+                <Form.Group>
+                    <span style={{ color: "red" }}>{errorMessage}</span>
+                </Form.Group>
                 <Form.Group style={{ textAlign: "right" }}>
-                    <span>Нов Потребител </span><Link to="/register" >Регистрация се</Link>
-
+                    <Link to="/register" >Регистрирай се</Link>
                 </Form.Group>
             </Form>
         </>
