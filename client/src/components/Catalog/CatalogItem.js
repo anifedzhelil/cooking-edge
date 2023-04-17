@@ -20,7 +20,7 @@ export const CatalogItem = ({
 }`}
             </style>
             <Card style={{ width: '18rem' }}>
-                <Card.Link as={Link} to={`/recipe-details/${_id}`}>
+                <Card.Link as={Link} to={`/catalog/${_id}`}>
                     <Card.Img variant="top" src={imageUrl} style={{ height: "200px" }} />
                 </Card.Link>
                 <Card.Body>

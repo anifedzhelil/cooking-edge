@@ -6,7 +6,6 @@ import Navbar from 'react-bootstrap/Navbar';
 import logo from './logo.png';
 import styles from './Header.module.css'
 import { Link } from 'react-router-dom';
-import { useRecipeContext } from '../../contexts/RecipeContext';
 
 export const Header = () => {
   const { isAuthenticated, username } = useAuthContex();

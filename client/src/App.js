@@ -16,6 +16,7 @@ import { RouteGuard } from './components/Common/RouteGard';
 import { AuthProvider } from './contexts/AuthContext';
 import { RecipeProvider } from './contexts/RecipeContext';
 import { Footer } from './components/Footer/Footer';
+import { RecipeOwner } from './components/Common/RecipeOwner';
 
 function App() {
     return (
@@ -33,10 +34,13 @@ function App() {
                             <Route path="/login" element={<Login />}></Route>
                             <Route path="/catalog" element={<Catalog />}></Route>
                             <Route path="/logout" element={<Logout />}></Route>
-                            <Route path="/recipe-details/:recipeId/*" element={<RecipeDetails />}></Route>
+                            <Route path="/catalog/:recipeId/*" element={<RecipeDetails />}></Route>
                             <Route element={<RouteGuard />}>
                                 <Route path="/create-recipe" element={<CreateRecipe />} ></Route>
-                                <Route path="/recipeDetails/:recipeId/edit" element={<EditRecipe />}></Route>
+                                <Route path="/recipeDetails/:recipeId/edit" element={
+                                    <RecipeOwner>
+                                        <EditRecipe />
+                                    </RecipeOwner>}></Route>
                             </Route>
 
                         </Routes>
