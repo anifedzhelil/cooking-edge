@@ -1,0 +1,67 @@
+.image {
+
+
+    width: 100%;
+    height: auto;
+}
+
+.description {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+    font-size: 20px;
+    letter-spacing: 0px;
+    word-spacing: -0.6px;
+    color: #000000;
+    font-weight: normal;
+    text-decoration: none;
+    font-style: italic;
+    font-variant: normal;
+    text-transform: none;
+}
+
+.linkText {
+    font-family: Georgia, serif;
+    font-size: 40px;
+    letter-spacing: 0px;
+    word-spacing: 0.6px;
+    color: #443BAF;
+    font-weight: 700;
+    text-decoration: none;
+    font-style: italic;
+    font-variant: normal;
+    text-transform: uppercase;
+}
+
+@media screen and (max-width: 600px) {
+    .column {
+        width: 100%;
+    }
+}
+
+.button {
+	box-shadow: 6px 7px 4px -7px #0b0b77;
+	background:linear-gradient(to bottom, #3c6de7 5%, #2121d0 100%);
+	background-color:#1850dc;
+	border-radius:7px;
+	border:1px solid #2121d0;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Georgia;
+	font-size:22px;
+	font-weight:bold;
+	padding:8px 25px;
+	text-decoration:none;
+	text-shadow:0px 0px 0px #2121d0;
+}
+.button:hover {
+	background:linear-gradient(to bottom, #2121d0 10%, #2121d0 100%);
+	background-color:#1850dc;
+}
+.button:active {
+	position:relative;
+	top:1px;
+}
+
+.button a{
+    color: white;
+}

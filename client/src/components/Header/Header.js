@@ -14,7 +14,7 @@ export const Header = () => {
     <>
       <Navbar className={styles.navbarflat} expand="lg">
         <Container fluid>
-          <Navbar.Brand as={Link} to="/catalog" ><img
+          <Navbar.Brand as={Link} to="/" ><img
             alt=""
             src={logo}
             width="100px"
@@ -27,7 +27,9 @@ export const Header = () => {
               style={{ maxHeight: '100px' }}
               navbarScroll
             >
-              <Nav.Link as={Link} to="/catalog" >ٌРецепти</Nav.Link>
+              <Nav.Link as={Link} to="/" >Начална страница</Nav.Link>
+              <Nav.Link as={Link} to="/catalog">Рецепти</Nav.Link>
+
               {isAuthenticated && (
                 <>
                   <Nav.Link as={Link} to="/create-recipe">Добави рецепта</Nav.Link>

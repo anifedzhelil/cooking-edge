@@ -17,6 +17,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { RecipeProvider } from './contexts/RecipeContext';
 import { Footer } from './components/Footer/Footer';
 import { RecipeOwner } from './components/Common/RecipeOwner';
+import { Home } from './components/Home/Home';
 
 function App() {
     return (
@@ -26,7 +27,7 @@ function App() {
                     <Header />
                     <div className="App-div">
                         <Routes>
-                            <Route path="/" element={<Catalog />}></Route>
+                            <Route path="/" element={<Home/>}></Route>
                             <Route element={<RouteGuard />}>
                             </Route>
                             <Route path="/catalog-Item" element={<CatalogItem />}></Route>
