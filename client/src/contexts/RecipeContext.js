@@ -129,14 +129,14 @@ export const RecipeProvider = ({ children }) => {
                         const images = await imageService.getAll(data._id);
                             setRecipes(state => state.map(x => x._id === values._id ? {
                             ...data,
-                            imageUrl: images[0].image,
+                            imageUrl: images.length > 0 ? images[0].image : '',
                             totalRating: x.totalRating,
                         } : x))
 
                     })
 
             });
-        navigate(`/recipe-details/${values._id}`);
+        navigate(`/catalog/${values._id}`);
     }
 
     const onSearchSubmit = async (values) => {

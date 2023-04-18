@@ -22,7 +22,7 @@ export const AddComment = ({ onCommentSubmit }) => {
         
         else {
             onSubmit(event);
-             values.comment = '';
+             values.comment = '  ';
              form.noValidate = true;
         }
         setValidated(true);

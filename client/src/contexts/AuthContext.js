@@ -18,6 +18,7 @@ export const AuthProvider = ({
     const navigate = useNavigate();
 
     const onLoginSubmit = async (data) => {
+        debugger;
         try {
             const result = await authService.login(data);
             setAuth(result);

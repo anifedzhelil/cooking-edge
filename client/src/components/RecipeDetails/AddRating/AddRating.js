@@ -26,7 +26,7 @@ export const AddRating = ({ onRatingSubmit }) => {
                     );
                 })}
             </div>
-            <Button variant="primary" type="submit" onClick={() => onRatingSubmit(rating)}>Добави отценка</Button>
+            <Button variant="primary" type="submit" onClick={() => onRatingSubmit(rating)}>Добави оценка</Button>
 
         </>
     );

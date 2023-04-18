@@ -1,7 +1,7 @@
 import { Card } from 'react-bootstrap';
-import styles from '../Catalog/styles/Catalog.module.css';
 import { Link } from 'react-router-dom';
 import { Rating } from '../Rating/Rating';
+import emptyImage from './styles/empty_img.jpg';
 
 export const CatalogItem = ({
     _id,
@@ -21,7 +21,7 @@ export const CatalogItem = ({
             </style>
             <Card style={{ width: '18rem' }}>
                 <Card.Link as={Link} to={`/catalog/${_id}`}>
-                    <Card.Img variant="top" src={imageUrl} style={{ height: "200px" }} />
+                    <Card.Img variant="top" src={imageUrl !== '' ? imageUrl : emptyImage} style={{ height: "200px" }} />
                 </Card.Link>
                 <Card.Body>
                     <Card.Title>{title}</Card.Title>
